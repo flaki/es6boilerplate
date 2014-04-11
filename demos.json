@@ -1,0 +1,16 @@
+[
+	{	"group": "es6",
+		"title": "ES6 Features",
+
+		"demos": [
+		]
+	},
+
+	{	"group": "webapi",
+		"title": "Open Web API-s",
+
+		"demos": [
+			"Geolocation"
+		]
+	}
+]
