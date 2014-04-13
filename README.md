@@ -134,6 +134,14 @@ the build & compilation process. This is how it works:
   [application manifest](https://developer.mozilla.org/en-US/Apps/Build/Manifest),
   place your resources & styles in the app directory and you are ready to go!
 
+* If you do not have a Firefox OS device at hand, you can easily try review the boilerplate
+  and your created apps using the
+  [App Manager](https://developer.mozilla.org/en-US/Firefox_OS/Using_the_App_Manager) -
+  you will need Mozilla Firefox, version 26+ and the separately installable
+  [Firefox OS Simulator](https://ftp.mozilla.org/pub/mozilla.org/labs/fxos-simulator/)
+  add-on to run your app in an emulated Firefox OS-environment, on your PC.
+  
+
 ### What is inside the `src/*` folder?
 
 This folder contains your (ES6) source code for your app modules. This folder uses
