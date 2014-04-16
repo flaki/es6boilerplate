@@ -1,25 +1,25 @@
 {
   "name": "Firefox OS AppSkeleton",
   "description": "Firefox OS + ECMAScript 6 boilerplate app, ES6 features & Open Web API demo showcase.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "launch_path": "/index.html",
   "icons": {
-    "256": "/i/icon/es256.png",
+    "30": "/i/icon/es30.png",
+    "60": "/i/icon/es60.png",
     "128": "/i/icon/es128.png",
-     "60": "/i/icon/es60.png",
-     "30": "/i/icon/es30.png"
+    "256": "/i/icon/es256.png"
   },
   "developer": {
     "name": "Flaki @ POSSIBLE Budapest",
     "url": "http://twitter.com/slsoftworks"
   },
-	"permissions": {
-		"desktop-notification": {
-			"description": "To show notifications"
-		},
-		"geolocation": {
-			"description": "used by the webapi/Geolocation demo"
-		}
-	},
+  "permissions": {
+    "desktop-notification": {
+      "description": "To show notifications"
+    },
+    "geolocation": {
+      "description": "used by the webapi/Geolocation demo"
+    }
+  },
   "default_locale": "en"
 }
