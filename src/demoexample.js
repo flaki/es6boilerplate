@@ -43,7 +43,16 @@ function logging_function (...msgs) {
 function linkify (string) {
 	return string.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, (...rx) => '<a href="'+rx[2]+'">'+rx[1]+'</a>');
 }
-
+// Basic markdown parsing
+function markdown_basics(string) {
+	return linkify(string)
+		// Inline code pieces
+		.replace(/\`([^\`]+)\`/g, (...rx) => '<code>'+rx[1]+'</code>')
+		// Doublespace-linebreaks
+		.replace(/  \r?\n/g, '<br>\n')
+		// Bold typeface
+		.replace(/\*([^\*]+)\*/g, (...rx) => '<strong>'+rx[1]+'</strong>');
+}
 export class DemoExample {
 	constructor () {
 	}
@@ -60,7 +69,7 @@ export class DemoExample {
 		console.log("Text: ", contents);
 
 		let e = document.createElement('p');
-			e.innerHTML = linkify(contents);
+			e.innerHTML = markdown_basics(contents);
 
 		this.frame.appendChild(e);
 	}
