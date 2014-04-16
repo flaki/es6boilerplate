@@ -41,13 +41,15 @@ function logging_function (...msgs) {
 
 // Markdown-like link parsing 
 function linkify (string) {
-	return string.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, (...rx) => '<a href="'+rx[2]+'">'+rx[1]+'</a>');
+	return string.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, (...rx) => '<a target="_blank" href="'+rx[2]+'">'+rx[1]+'</a>');
 }
 // Basic markdown parsing
 function markdown_basics(string) {
 	return linkify(string)
 		// Inline code pieces
 		.replace(/\`([^\`]+)\`/g, (...rx) => '<code>'+rx[1]+'</code>')
+		// New paragraph
+		.replace(/\s*\r?\n(\s*\r?\n)+/g, '</p><p>')
 		// Doublespace-linebreaks
 		.replace(/  \r?\n/g, '<br>\n')
 		// Bold typeface
@@ -66,10 +68,15 @@ export class DemoExample {
 	addText(contents) {
 		if (!this.frame) return console.error(this,'Not assigned to render element.');
 	
-		console.log("Text: ", contents);
+		console.debug("Text: ", contents);
 
-		let e = document.createElement('p');
-			e.innerHTML = markdown_basics(contents);
+		let e = document.createDocumentFragment();
+
+		markdown_basics(contents).split('</p><p>').forEach((contents) => {
+			let p = document.createElement('p');
+				p.innerHTML = contents;
+				e.appendChild(p);
+		});
 
 		this.frame.appendChild(e);
 	}
@@ -78,7 +85,7 @@ export class DemoExample {
 	addDemo(source, type = "markup") {
 		if (!this.frame) return console.error(this,'Not assigned to render element.');
 
-		console.log("Demo: ", type, source);
+		console.debug("Demo: ", type, source);
 
 		let e = document.createElement('pre'),
 			code = document.createElement('code');
@@ -95,7 +102,7 @@ export class DemoExample {
 	addDemoCode(source, exec) {
 		if (!this.frame) return console.error(this,'Not assigned to render element.');
 
-		console.log("Code: ",source, exec);
+		console.d("Code: ",source, exec);
 
 		// Demo code source
 		let e = document.createElement('pre'),
