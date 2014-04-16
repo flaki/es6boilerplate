@@ -1415,11 +1415,11 @@ function escape(string) {
   return string.replace(/\&/g, '&amp;').replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
 }
 function logging_function() {
-  var $__5;
+  var $__6;
   for (var msgs = [],
       $__3 = 0; $__3 < arguments.length; $__3++)
     msgs[$__3] = arguments[$__3];
-  ($__5 = console).log.apply($__5, $traceurRuntime.toObject(msgs));
+  ($__6 = console).log.apply($__6, $traceurRuntime.toObject(msgs));
   var sandbox = document.getElementById(this.dataset.sandbox);
   if (!sandbox)
     return false;
@@ -1450,7 +1450,20 @@ function linkify(string) {
     for (var rx = [],
         $__4 = 0; $__4 < arguments.length; $__4++)
       rx[$__4] = arguments[$__4];
-    return '<a href="' + rx[2] + '">' + rx[1] + '</a>';
+    return '<a target="_blank" href="' + rx[2] + '">' + rx[1] + '</a>';
+  }));
+}
+function markdown_basics(string) {
+  return linkify(string).replace(/\`([^\`]+)\`/g, (function() {
+    for (var rx = [],
+        $__4 = 0; $__4 < arguments.length; $__4++)
+      rx[$__4] = arguments[$__4];
+    return '<code>' + rx[1] + '</code>';
+  })).replace(/\s*\r?\n(\s*\r?\n)+/g, '</p><p>').replace(/  \r?\n/g, '<br>\n').replace(/\*([^\*]+)\*/g, (function() {
+    for (var rx = [],
+        $__5 = 0; $__5 < arguments.length; $__5++)
+      rx[$__5] = arguments[$__5];
+    return '<strong>' + rx[1] + '</strong>';
   }));
 }
 var DemoExample = function DemoExample() {};
@@ -1461,16 +1474,20 @@ var DemoExample = function DemoExample() {};
   addText: function(contents) {
     if (!this.frame)
       return console.error(this, 'Not assigned to render element.');
-    console.log("Text: ", contents);
-    var e = document.createElement('p');
-    e.innerHTML = linkify(contents);
+    console.debug("Text: ", contents);
+    var e = document.createDocumentFragment();
+    markdown_basics(contents).split('</p><p>').forEach((function(contents) {
+      var p = document.createElement('p');
+      p.innerHTML = contents;
+      e.appendChild(p);
+    }));
     this.frame.appendChild(e);
   },
   addDemo: function(source) {
     var type = arguments[1] !== (void 0) ? arguments[1] : "markup";
     if (!this.frame)
       return console.error(this, 'Not assigned to render element.');
-    console.log("Demo: ", type, source);
+    console.debug("Demo: ", type, source);
     var e = document.createElement('pre'),
         code = document.createElement('code');
     code.className = 'language-' + type;
@@ -1482,7 +1499,7 @@ var DemoExample = function DemoExample() {};
   addDemoCode: function(source, exec) {
     if (!this.frame)
       return console.error(this, 'Not assigned to render element.');
-    console.log("Code: ", source, exec);
+    console.d("Code: ", source, exec);
     var e = document.createElement('pre'),
         code = document.createElement('code');
     code.className = "language-javascript";
@@ -1537,9 +1554,7 @@ var $GeolocationDemo = GeolocationDemo;
   render: function(element) {
     var $__0 = this;
     $traceurRuntime.superCall(this, $GeolocationDemo.prototype, "render", [element]);
-    this.addText("Geolocation example...");
-    this.addText("Based on the [MDN](https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation) geolocation-tutorial...");
-    this.addText("...");
+    this.addText("\r\n<h1>Geolocation API demo</h1>\r\n*API docs*: [Geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation)  \r\n*API availability*: Firefox OS 1.0.1+  \r\n*API permissions*:\r\n\t[geolocation](https://developer.mozilla.org/en-US/Apps/Build/App_permissions)\r\n\t\`hosted\`\r\n\r\n*Demo ES6-features*:  \r\n\tPromises, Arrow functions, Destructuring\r\n\r\nBased on the [MDN Geolocation Tutorial](https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation).\r\n\r\nWe will be using the \`navigator.geolocation\` API to access geolocation features. The API is present\r\nin Firefox OS from the earliest versions, and most modern browsers support it, too.\r\n\r\nWe will first start by creating a \`Promise\`-returning wrapper function - because the geolocation request\r\nis an async process, we will need this promise to store the result of the operation and act upon it:\r\n");
     this.addDemo("// Get GPS cordinates via a Promise\r\nfunction getGPSCoords () {\r\n\t// Create new Promise to help out in fetching the geolocation data asynchronously\r\n\treturn new Promise( (resolve,reject) => { \r\n\r\n\t\t// Call the geolocation API\r\n\t\tnavigator.geolocation.getCurrentPosition(\r\n\t\t\t// Success callback -> promise resolves to geolocation position\r\n\t\t\t(pos) => resolve( [ pos.coords.latitude , pos.coords.longitude ] ),\r\n\r\n\t\t\t// Failure callback -> promise rejects with an error message\r\n\t\t\t()    => reject(new Error('Failed do retrieve your geolocation position.'))\r\n\t\t);\r\n\t});\r\n}", "javascript");
     this.addText("Let's see, how to use that!");
     this.addDemoCode("// Fetch GPS coordinates\r\nlet Coords = getGPSCoords();\r\n\r\n// If/when location information is retrieved, update the UI\r\nCoords.then(\r\n\t(coords) => {\r\n\t\tlet [lat,lon] = coords;\r\n\t\tconsole.log('Lat: '+lat+'°, Lon: '+lon+'°');\r\n\t}\r\n\r\n// ...or show an error message, if retrieving the GPS coordinates failed\r\n).catch(\r\n\t(e) => alert(e)\r\n);", (function(console) {
@@ -1549,6 +1564,7 @@ var $GeolocationDemo = GeolocationDemo;
     this.addDemoCode("// Fetch GPS coordinates\r\n// If/when location information is retrieved, show them on map!\r\nCoords.then(\r\n\t(coords) => {\r\n\t\tlet [lat,lon] = coords;\r\n\t\tlet i = new Image();\r\n\t\ti.src = \"http://maps.googleapis.com/maps/api/staticmap?key=AIzaSyD8QtSJG6rFsoKXH16E6QR2k_4-QBr3gdI&size=320x240&scale=2&maptype=roadmap&center=$LAT$,$LON$&zoom=12&markers=color:blue%7Clabel:%7C$LAT$,$LON$\"\r\n\t\t\t.replace('$LAT$',lat)\r\n\t\t\t.replace('$LON$',lon);\r\n\r\n\t\tdocument.body.appendChild(i);\r\n\t}\r\n);", (function(console) {
       return $__0.showLocation(console);
     }));
+    this.addText("\r\n<h2>[Help expand the demo...](https://github.com/flaki/es6boilerplate)</h2>\r\n...eg. by adding examples for:\r\n\r\n&bull; \`watchPosition()\`  \r\n&bull; flags (\`enableHighAccuracy\`, \`maximumAge\`, \`timeout\`)\r\n");
   },
   getGPSCoords: function() {
     return new Promise((function(resolve, reject) {

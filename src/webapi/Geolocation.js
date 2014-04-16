@@ -18,11 +18,26 @@ class GeolocationDemo extends DemoExample {
 	render (element) {
 		super(element);
 
-this.addText("Geolocation example...");
-this.addText("Based on the [MDN](https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation) geolocation-tutorial...");
+this.addText(`
+<h1>Geolocation API demo</h1>
+*API docs*: [Geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation)  
+*API availability*: Firefox OS 1.0.1+  
+*API permissions*:
+	[geolocation](https://developer.mozilla.org/en-US/Apps/Build/App_permissions)
+	\`hosted\`
 
+*Demo ES6-features*:  
+	Promises, Arrow functions, Destructuring
 
-this.addText("...");
+Based on the [MDN Geolocation Tutorial](https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation).
+
+We will be using the \`navigator.geolocation\` API to access geolocation features. The API is present
+in Firefox OS from the earliest versions, and most modern browsers support it, too.
+
+We will first start by creating a \`Promise\`-returning wrapper function - because the geolocation request
+is an async process, we will need this promise to store the result of the operation and act upon it:
+`);
+
 this.addDemo(`// Get GPS cordinates via a Promise
 function getGPSCoords () {
 	// Create new Promise to help out in fetching the geolocation data asynchronously
@@ -81,7 +96,15 @@ Coords.then(
 	return this.showLocation(console);
 });
 
-}
+this.addText(`
+<h2>[Help expand the demo...](https://github.com/flaki/es6boilerplate)</h2>
+...eg. by adding examples for:
+
+&bull; \`watchPosition()\`  
+&bull; flags (\`enableHighAccuracy\`, \`maximumAge\`, \`timeout\`)
+`);
+
+}//end of: render
 
 
 	// Geolocation
@@ -144,16 +167,6 @@ Coords.then(
 	}
 	reset () {
 	}
-
-
-	/*
-	https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation
-
-	47.4759873° 
-	19.0328715°
-	http://maps.googleapis.com/maps/api/staticmap?key=AIzaSyD8QtSJG6rFsoKXH16E6QR2k_4-QBr3gdI&size=320x240&scale=2&maptype=roadmap&center=47.4759873,19.0328715&zoom=12&markers=color:blue%7Clabel:%7C47.4759873,19.0328715
-
-	*/
 
 }
 
