@@ -200,12 +200,15 @@ body[data-page] article.active {
 }
 
 /* demo formatting */
-p {
+article > :last-child {
+    margin-bottom: 4em !important;
+}
+article > p {
     line-height: 140%;
     margin: 0 .5em .5em;
 }
 
-p > code {
+article > p > code {
     font-size: 92%;
     background: #f0f0f0;
     padding: 0 .33em;
@@ -214,12 +217,25 @@ p > code {
     border: 1px solid #e0e0e0;
 }
 
-article > p > a {
+article > p > h1 {
+	font-size: 1.8em;
+	margin: 0.6em 0;
+}
+article > p > h2 {
+	font-size: 1.4em;
+	margin: 0.4em 0;
+}
+article > p > h3 {
+	font-size: 1.25em;
+	margin: 0.3em 0;
+}
+
+article > p a {
     color: #00ace9;
     text-decoration: none;
 }
-article > p > a:focus,
-article > p > a:hover,
-article > p > a:active {
+article > p a:focus,
+article > p a:hover,
+article > p a:active {
     text-decoration: underline;
 }
