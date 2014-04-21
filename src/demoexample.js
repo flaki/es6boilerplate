@@ -102,7 +102,7 @@ export class DemoExample {
 	addDemoCode(source, exec) {
 		if (!this.frame) return console.error(this,'Not assigned to render element.');
 
-		console.d("Code: ",source, exec);
+		console.debug("Code: ",source, exec);
 
 		// Demo code source
 		let e = document.createElement('pre'),
