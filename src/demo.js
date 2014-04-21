@@ -1,6 +1,7 @@
 export class Demo {
 	constructor () {
 		this.examples = [];
+		this.labels = {};
 
 		// Initialize back button in Header
 		document.querySelector('header > button').addEventListener('click', (e) => {
@@ -30,8 +31,10 @@ export class Demo {
 		var {group, title} = example;
 		// Object property shortcut notation, equals:
 		//   { title: title, group: group, example: example ... }
-		var label = (group?group+'_':'') + title;
+		var label = (group?group.toLowerCase()+'_':'') + title.replace(/\s+/,'_').toLowerCase();
 		this.examples.push({ title, group, example, label });
+		this.labels[label] = this.examples.length - 1;
+		// TODO: use a Map instead
 
 		console.log('Added new example ('+label+'): ', example);
 
@@ -52,6 +55,11 @@ export class Demo {
 
 	// Activate specified example
 	activate(label) {
+		// Update header texts
+		var { group, title } = this.examples[this.labels[label]];
+		document.querySelector('header > .sub.group').textContent = group;
+		document.querySelector('header > .sub.title').textContent = title;
+
 		// Set active page
 		document.querySelector('article#'+label).classList.add('active');
 

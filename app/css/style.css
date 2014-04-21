@@ -85,25 +85,7 @@ header h3 {
     margin: 2px 0 0;
 }
 
-/* On small screens */
-@media only screen and (max-width: 540px) {
-	/* smaller fonts */
-	body {
-		font-size: 12px;
-	}
-	
-	/* smaller fonts, reduce tab size to 2 characters, enable wrapping */
-	code[class*="language-"], pre[class*="language-"] {
-		font-size: 10px;
-
-		-moz-tab-size: 2;
-		-o-tab-size: 2;
-		tab-size: 2;
-
-		white-space: pre-wrap;
-	}
-}
-
+/* demo code sandbox */
 .sandbox {
 	padding-bottom: 4em !important;
 
@@ -180,6 +162,8 @@ main button {
     border: 1px solid #444;
     border-radius: 0;
     box-shadow: 0 0 3px 1px #777 inset;
+
+	max-width: 16em;
 }
 main button:focus {
     color: #000;
@@ -208,13 +192,16 @@ article > p {
     margin: 0 .5em .5em;
 }
 
-article > p > code {
+article > p code {
     font-size: 92%;
     background: #f0f0f0;
     padding: 0 .33em;
     border-radius: .33em;
     color: #606060;
     border: 1px solid #e0e0e0;
+}
+article > p a > code {
+	color: inherit;
 }
 
 article > p > h1 {
@@ -230,6 +217,11 @@ article > p > h3 {
 	margin: 0.3em 0;
 }
 
+article > p > h2:first-child,
+article > p > h3:first-child {
+	margin-top: 1em;
+}
+
 article > p a {
     color: #00ace9;
     text-decoration: none;
@@ -238,4 +230,39 @@ article > p a:focus,
 article > p a:hover,
 article > p a:active {
     text-decoration: underline;
+}
+
+
+/* On small screens */
+@media only screen and (max-width: 540px) {
+	/* smaller fonts */
+	body {
+		font-size: 12px;
+	}
+	
+	/* smaller fonts, reduce tab size to 2 characters, enable wrapping */
+	code[class*="language-"], pre[class*="language-"] {
+		font-size: 10px;
+
+		-moz-tab-size: 2;
+		-o-tab-size: 2;
+		tab-size: 2;
+
+		white-space: pre-wrap;
+	}
+}
+
+
+
+/* On large screens */
+@media only screen and (min-width: 541px) {
+	/* maximize column width */
+	article > * {
+		max-width: 800px;
+	}
+
+	/* left-align the button that executes the demo code */
+	.sandbox + button {
+		margin: 0 1em;
+	}
 }
