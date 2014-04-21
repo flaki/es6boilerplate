@@ -82,7 +82,7 @@ export class DemoExample {
 	}
 
 	// Adds syntax-highlighted source code
-	addDemo(source, type = "markup") {
+	addCode(source, type = "markup") {
 		if (!this.frame) return console.error(this,'Not assigned to render element.');
 
 		console.debug("Demo: ", type, source);
@@ -122,7 +122,7 @@ export class DemoExample {
 			sandbox.className = 'sandbox language-clike';
 
 		let launchbtn = document.createElement('button');
-			launchbtn.textContent = "Start";
+			launchbtn.textContent = "Run\u2026";
 			launchbtn.dataset.sandbox = sbid;
 
 		// Launch/reset button event listener
@@ -140,7 +140,7 @@ export class DemoExample {
 			// Reset to be ran again
 			} else {
 				btn.dataset.started = '';
-				btn.textContent = "Start";
+				btn.textContent = "Run\u2026";
 
 				// Reset log
 				document.getElementById(btn.dataset.sandbox).innerHTML = '';

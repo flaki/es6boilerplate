@@ -38,7 +38,7 @@ We will first start by creating a \`Promise\`-returning wrapper function - becau
 is an async process, we will need this promise to store the result of the operation and act upon it:
 `);
 
-this.addDemo(`// Get GPS cordinates via a Promise
+this.addCode(`// Get GPS cordinates via a Promise
 function getGPSCoords () {
 	// Create new Promise to help out in fetching the geolocation data asynchronously
 	return new Promise( (resolve,reject) => { 
