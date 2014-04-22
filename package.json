@@ -1,6 +1,6 @@
 {
   "name": "fxos-es6boilerplate",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Leverage the power of ES6 (ES.next) syntax in your Firefox OS apps today",
   "main": "dist/app.js",
   "directories": {

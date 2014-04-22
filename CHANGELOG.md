@@ -1,4 +1,16 @@
-## 0.1.1 (2014-04-06)
+## 0.1.2 (2014-04-22)
+
+AppSkeleton:
+
+  - Bigscreen support for latest Firefox/Webkit
+  - Various fixes and enhancements in DemoExample
+
+Demos:
+
+  - Added ES6 Arrow Functions API demo
+
+
+## 0.1.1 (2014-04-16)
 
 AppSkeleton:
 
