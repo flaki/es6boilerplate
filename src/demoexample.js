@@ -28,9 +28,18 @@ function logging_function (...msgs) {
 			}
 
 			// Append stringified JSON
-			m = JSON.stringify(m)
-				.replace(/(\:|\,|\{|\[)/g,'$1 ')
-				.replace(/(\]|\})/g,' $1');
+			try {
+				m = JSON.stringify(m
+								   // skip recursion for app
+								   ,(k,v) => (k === "app" ? undefined : v)
+								  )
+					.replace(/(\:|\,|\{|\[)/g,'$1 ')
+					.replace(/(\]|\})/g,' $1');
+			}
+			// Stringification failed (cycles in object?)
+			catch (ex) {
+				m = m.toString();
+			}
 
 		default:
 			sandbox.insertAdjacentHTML('beforeend', Prism.highlight(m+" ", Prism.languages.javascript));
