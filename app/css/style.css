@@ -263,6 +263,11 @@ article > p a:active {
 		max-width: 800px;
 	}
 
+    /* make commentrs wrap */
+    article .token.comment {
+        white-space: pre-wrap;
+    }
+
 	/* left-align the button that executes the demo code */
 	.sandbox + button {
 		margin: 0 1em;
