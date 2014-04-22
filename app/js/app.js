@@ -1346,15 +1346,18 @@ console.debug('Initializing "demo" app...');
 var Demo = require('demo').Demo;
 window.APP = new Demo();
 APP.addDemoGroup('ES6 Features');
+var ArrowFunctionsDemo = require('es6/ArrowFunctions').example;
+ArrowFunctionsDemo(APP);
 APP.addDemoGroup('Open Web API-s');
 var GeolocationDemo = require('webapi/Geolocation').example;
 GeolocationDemo(APP);
 
-},{"demo":2,"webapi/Geolocation":4}],2:[function(require,module,exports){
+},{"demo":2,"es6/ArrowFunctions":4,"webapi/Geolocation":5}],2:[function(require,module,exports){
 "use strict";
 var __moduleName = "demo";
 var Demo = function Demo() {
   this.examples = [];
+  this.labels = {};
   document.querySelector('header > button').addEventListener('click', (function(e) {
     if (document.body.dataset.page) {
       delete document.body.dataset.page;
@@ -1373,13 +1376,14 @@ var Demo = function Demo() {
     var $__2 = example,
         group = $__2.group,
         title = $__2.title;
-    var label = (group ? group + '_' : '') + title;
+    var label = (group ? group.toLowerCase() + '_' : '') + title.replace(/\s+/, '_').toLowerCase();
     this.examples.push({
       title: title,
       group: group,
       example: example,
       label: label
     });
+    this.labels[label] = this.examples.length - 1;
     console.log('Added new example (' + label + '): ', example);
     var element = document.createElement('article');
     element.id = label;
@@ -1393,6 +1397,11 @@ var Demo = function Demo() {
     document.querySelector('main').appendChild(launcher);
   },
   activate: function(label) {
+    var $__2 = this.examples[this.labels[label]],
+        group = $__2.group,
+        title = $__2.title;
+    document.querySelector('header > .sub.group').textContent = group;
+    document.querySelector('header > .sub.title').textContent = title;
     document.querySelector('article#' + label).classList.add('active');
     document.body.dataset.page = label;
   },
@@ -1436,7 +1445,13 @@ function logging_function() {
               sandbox.appendChild(m);
               break;
             }
-            m = JSON.stringify(m).replace(/(\:|\,|\{|\[)/g, '$1 ').replace(/(\]|\})/g, ' $1');
+            try {
+              m = JSON.stringify(m, (function(k, v) {
+                return (k === "app" ? undefined : v);
+              })).replace(/(\:|\,|\{|\[)/g, '$1 ').replace(/(\]|\})/g, ' $1');
+            } catch (ex) {
+              m = m.toString();
+            }
           default:
             sandbox.insertAdjacentHTML('beforeend', Prism.highlight(m + " ", Prism.languages.javascript));
         }
@@ -1483,7 +1498,7 @@ var DemoExample = function DemoExample() {};
     }));
     this.frame.appendChild(e);
   },
-  addDemo: function(source) {
+  addCode: function(source) {
     var type = arguments[1] !== (void 0) ? arguments[1] : "markup";
     if (!this.frame)
       return console.error(this, 'Not assigned to render element.');
@@ -1499,7 +1514,7 @@ var DemoExample = function DemoExample() {};
   addDemoCode: function(source, exec) {
     if (!this.frame)
       return console.error(this, 'Not assigned to render element.');
-    console.d("Code: ", source, exec);
+    console.debug("Code: ", source, exec);
     var e = document.createElement('pre'),
         code = document.createElement('code');
     code.className = "language-javascript";
@@ -1512,7 +1527,7 @@ var DemoExample = function DemoExample() {};
     sandbox.id = sbid;
     sandbox.className = 'sandbox language-clike';
     var launchbtn = document.createElement('button');
-    launchbtn.textContent = "Start";
+    launchbtn.textContent = "Run\u2026";
     launchbtn.dataset.sandbox = sbid;
     launchbtn.addEventListener('click', (function(e) {
       var btn = e.target;
@@ -1522,7 +1537,7 @@ var DemoExample = function DemoExample() {};
         exec({log: logging_function.bind(btn)});
       } else {
         btn.dataset.started = '';
-        btn.textContent = "Start";
+        btn.textContent = "Run\u2026";
         document.getElementById(btn.dataset.sandbox).innerHTML = '';
       }
     }));
@@ -1538,6 +1553,153 @@ module.exports = {
 };
 
 },{}],4:[function(require,module,exports){
+"use strict";
+var __moduleName = "ArrowFunctions";
+var DemoExample = require('demoexample').DemoExample;
+var DEMO_GROUP = 'es6';
+var DEMO_TITLE = 'Arrow functions';
+var ES6ArrowsDemo = function ES6ArrowsDemo(app) {
+  this.app = app;
+  this.group = DEMO_GROUP;
+  this.title = DEMO_TITLE;
+  this.app.addDemo(this);
+};
+var $ES6ArrowsDemo = ES6ArrowsDemo;
+($traceurRuntime.createClass)(ES6ArrowsDemo, {
+  render: function(element) {
+    var $__0 = this;
+    $traceurRuntime.superCall(this, $ES6ArrowsDemo.prototype, "render", [element]);
+    this.addText("<h1>ECMAScript 6 arrow functions</h1>\n*Docs*:\n [Strawman](http://wiki.ecmascript.org/doku.php?id=harmony:arrow_function_syntax) &middot;\n [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/arrow_functions)  \n*Native support*:\n [Firefox 22+](https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla) &middot;\n [Firefox OS 1.2+](https://developer.mozilla.org/en-US/Firefox_OS/Releases/1.2)\n\nArrow functions in EcmaScript 6 have their roots in C# and ar the the native equivalent of [CoffeeScript\n\"fat arrow\"](http://coffeescript.org/#fat-arrow) function declarations.\n\nBasic syntax: \`args *=>* function_body\`\n\n<h3>So, what are the advantages of using arrow functions?</h3>\n\nThey are shorter, more conscise and readable than traditional function declarations:\n");
+    this.addCode("// Instead of writing\nfunction(arg) { return arg.prop }\n\n// ..all you need to type is\narg => arg.prop\n\n// Such as:\nvar f = x => x+1;\n\n// ..is the equivalent of\nvar f = function (x) { return x+1 };\n\n// ..empty argument lists are supported, too:\nvar empty = () => 'empty args list';\n\n// ..and, of course, lenghtier function bodies & multiple arguments:\nvar longer = (x, y) => {\n\tif (x == y) return 'It's a tie - <x> equals <y>.';\n\tif (x > y) return 'Yay, <x> wins!';\n\treturn 'There you go, <y> is the man!';\n};\n", 'javascript');
+    this.addText("A useful perk of arrow functions, is that they're inherently bound by default\n(their \`this\` is lexically scoped, independent of the object the function is called on):\n\nNormally, the value of the \`this\` property inside an executing functin is dynamic - it depends on what object the function was called on (or the global object/\`undefined\` in cases where the function is not called as a method - read more about the [value of the \`this\` property on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)).\n\nPre-ES6, you could manipulate the \`this\` property via the function's \`call(thisvalue)\`/\`apply(thisvalue)\` method calls, by setting it to the desired \`this\` value just before calling the function itself.  \nSince ES5, you can use the [\`Array.prototype.bind()\`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind) call to permanently fix the \`this\` value of a particular function to a value specified by you, regardless of the calling environment. Function that are \"locked' on to a specific this value are called bound functions.\n\nArrow functions do something quite similar to this latter case, as they do not have their own \`this\` property, but are 'bound' to the active \`this\` value of the enclosing scope (=of the function object has been defined in).");
+    this.addDemoCode("// Traditional function declaration\nvar func = function () { console.log(this, this && this.name); };\n\n// Traditional method declaration\nvar es5obj = {\n    name: 'ES5',\n    method: function () { console.log(this, this && this.name); }\n};\n\n// ES6 arrow syntax function declaration\nvar es6obj = {\n    name: 'ES6',\n    method: () => { console.log(this, this && this.name); }\n};\n\n// Call the named function directly\n// Logs: undefined \"\" (\"this\" is undefined for direct invocations, *see note)\nfunc();\n\n// Logs: es5obj \"ES5\"\nes5obj.method();\n\n// Logs: \"undefined\" since the arrow function is bound to the current outer scope (which is undefined)\nes6obj.method();\n\n// Logs: es6obj \"ES6\" as the method call will now act on the specified object (es6obj) as its this-value\nes5obj.method.call(es6obj);\n\n// Logs: \"undefined\" as the arrow function remains bound to the active scope of its declaration, and can not be overridden\nes6obj.method.call(es5obj);\n\n// The bound function below, on the other hand, will act pretty much alike the arrow function above\nvar bound_es5obj = {\n    name: 'Bound ES5',\n    method: (function () { console.log(this, this && this.name); }).bind(this)\n};\n\n// Logs: undefined \"\" for both calls, as the function is already bound to the enclosing this value, and can not be overridden\nconsole.log('Bound: ', bound_es5obj);\nbound_es5obj.method();\nbound_es5obj.method.call(es6obj);\n", (function(console) {
+      return $__0.thisBindExample(console);
+    }));
+    this.addText("<strong>* NOTE: </strong> <em>Note that this only holds in strict mode\n(and thus, the implicitly strict module code, in traditional script context this in\nsuch calls refers to the global object (eg.: window)).</em>");
+    this.addText("<h3>Arrow functions are great for:</h3>\n\n*Callbacks*:");
+    this.addDemoCode("// They are great for quick, short callbacks for library functions:\n\n// Convert all numbers in a string to hexa form\nlet hexMe = \"ab 123 cd 34 efgh 576 k\";\nconsole.log(hexMe.replace(/\d+/g, n => \"0x\"+Number(n).toString(16) ));\n\n// Sort by object id\nlet sortMe = [\n\t{ id: \"M38D2LDJ\", name: \"Fish\" },\n\t{ id: \"B59C7123\", name: \"Spaghetti\" },\n\t{ id: \"0014ACX5\", name: \"Book\" },\n\t{ id: \"HDU27JEN\", name: \"Toy\" },\n];\nconsole.log(sortMe.sort( (a,b) => a.id.localeCompare(b.id) ));\n\n// Create cubic sum\nlet cubsumMe = [ 4, 2, 3 ];\nconsole.log(cubsumMe.reduce( (prev,current) => prev+current*current , 0));\n", (function(console) {
+      return $__0.callbackExample(console);
+    }));
+    this.addText("*Event listeners*:");
+    this.addDemoCode("// Create a new button to attach the event listener to\nlet button = document.createElement('button');\n\nbutton.textContent = 'Click me!';\nbutton.addEventListener('click', e => {\n\tconsole.log('Clicked button:');\n\n\t// \"this\" no longer represents the element the event was fired on but is instead, undefined ( = matches the \"this\" of the enclosing scope)\n\tconsole.log('value of this: ', this);\n\n\t// to access the event target, use the event argument\n\tconsole.log('event target: ', e.target);\n});\n\ndocument.body.appendChild(button);\n", (function(console) {
+      return $__0.eventListenerExample(console);
+    }));
+    this.addText("*Promise handlers:*");
+    this.addDemoCode("// Let's see when the AppSkeleton repo was last updated via an AJAX call to the CORS-enabled GitHub v3 REST API and create a new Promise for the result\nvar P = new Promise( (resolve, reject) => {\n\tvar xhr = new XMLHttpRequest();\n\n\t// Query the repo information using api.github.com\n\txhr.open('GET', 'https://api.github.com/repos/flaki/es6boilerplate', true);\n\txhr.onreadystatechange = () => {\n\t\t// Wait until request completes\n\t\tif (xhr.readyState != 4) return;\n\n\t\t// HTTP error\n\t\tif (xhr.status != 200) {\n\t\t\treturn reject(new Error('XHR failed: HTTP/' + xhr.status));\n\t\t}\n\n\t\t// Success!\n\t\ttry {\n\t\t\tresolve(new Date(JSON.parse(xhr.responseText).updated_at));\n\t\t}\n\t\t// JSON/Date parse error, or general malformed JSON error\n\t\tcatch (ex) {\n\t\t\treject(ex);\n\t\t}\n\t};\n\n\tconsole.log('[flaki/es6boilerplate] Querying GitHub API for repo info...');\n\txhr.send();\n});\n\nP.then(\n\tresult => console.log('Current local time at Mozilla HQ: ', result.toLocaleString())\n).catch(\n\texception => console.log('Failed: ', exception)\n);\n", (function(console) {
+      $__0.promiseExample(console).then((function(result) {
+        return console.log('The AppSkeleton was last updated @', result.toLocaleString());
+      })).catch((function(exception) {
+        return console.log('Failed:', exception);
+      }));
+    }));
+    this.addText("\n<h2>[Help expand the demo...](https://github.com/flaki/es6boilerplate)</h2>\n...eg. by adding:\n\n&bull; more demos for useful use cases  \n&bull; anything else you feel like worth mentioning here\n");
+  },
+  thisBindExample: function(console) {
+    (function() {
+      var $__0 = this;
+      var func = function() {
+        console.log(this, this && this.name);
+      };
+      var es5obj = {
+        name: 'ES5',
+        method: function() {
+          console.log(this, this && this.name);
+        }
+      };
+      var es6obj = {
+        name: 'ES6',
+        method: (function() {
+          console.log($__0, $__0 && $__0.name);
+        })
+      };
+      func();
+      es5obj.method();
+      es6obj.method();
+      es5obj.method.call(es6obj);
+      es6obj.method.call(es5obj);
+      var bound_es5obj = {
+        name: 'Bound ES5',
+        method: (function() {
+          console.log(this, this && this.name);
+        }).bind(this)
+      };
+      console.log('Bound: ', bound_es5obj);
+      bound_es5obj.method();
+      bound_es5obj.method.call(es6obj);
+    })();
+  },
+  callbackExample: function(console) {
+    var hexMe = "ab 123 cd 34 efgh 576 k";
+    console.log(hexMe.replace(/\d+/g, (function(n) {
+      return "0x" + Number(n).toString(16);
+    })));
+    var sortMe = [{
+      id: "M38D2LDJ",
+      name: "Fish"
+    }, {
+      id: "B59C7123",
+      name: "Spaghetti"
+    }, {
+      id: "0014ACX5",
+      name: "Book"
+    }, {
+      id: "HDU27JEN",
+      name: "Toy"
+    }];
+    console.log(sortMe.sort((function(a, b) {
+      return a.id.localeCompare(b.id);
+    })));
+    var cubsumMe = [4, 2, 3];
+    console.log(cubsumMe.reduce((function(prev, current) {
+      return prev + current * current;
+    }), 0));
+  },
+  eventListenerExample: function(console) {
+    var $__0 = this;
+    var button = document.createElement('button');
+    button.textContent = 'Click me!';
+    button.addEventListener('click', (function(e) {
+      console.log('Clicked button:');
+      console.log('value of this: ', $__0);
+      console.log('event target: ', e.target.toString());
+    }));
+    console.log(button);
+  },
+  promiseExample: function(console) {
+    var P = new Promise((function(resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://api.github.com/repos/flaki/es6boilerplate', true);
+      xhr.onreadystatechange = (function() {
+        if (xhr.readyState != 4)
+          return;
+        if (xhr.status != 200) {
+          return reject(new Error('XHR failed: HTTP/' + xhr.status));
+        }
+        try {
+          resolve(new Date(JSON.parse(xhr.responseText).updated_at));
+        } catch (ex) {
+          reject(ex);
+        }
+      });
+      console.log('[flaki/es6boilerplate] Querying GitHub API for repo info...');
+      xhr.send();
+    }));
+    return P;
+  },
+  activate: function() {},
+  reset: function() {}
+}, {}, DemoExample);
+function example(Demo) {
+  return new ES6ArrowsDemo(Demo);
+}
+module.exports = {
+  get example() {
+    return example;
+  },
+  __esModule: true
+};
+
+},{"demoexample":3}],5:[function(require,module,exports){
 "use strict";
 var __moduleName = "Geolocation";
 var DemoExample = require('demoexample').DemoExample;
@@ -1555,7 +1717,7 @@ var $GeolocationDemo = GeolocationDemo;
     var $__0 = this;
     $traceurRuntime.superCall(this, $GeolocationDemo.prototype, "render", [element]);
     this.addText("\r\n<h1>Geolocation API demo</h1>\r\n*API docs*: [Geolocation](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation)  \r\n*API availability*: Firefox OS 1.0.1+  \r\n*API permissions*:\r\n\t[geolocation](https://developer.mozilla.org/en-US/Apps/Build/App_permissions)\r\n\t\`hosted\`\r\n\r\n*Demo ES6-features*:  \r\n\tPromises, Arrow functions, Destructuring\r\n\r\nBased on the [MDN Geolocation Tutorial](https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation).\r\n\r\nWe will be using the \`navigator.geolocation\` API to access geolocation features. The API is present\r\nin Firefox OS from the earliest versions, and most modern browsers support it, too.\r\n\r\nWe will first start by creating a \`Promise\`-returning wrapper function - because the geolocation request\r\nis an async process, we will need this promise to store the result of the operation and act upon it:\r\n");
-    this.addDemo("// Get GPS cordinates via a Promise\r\nfunction getGPSCoords () {\r\n\t// Create new Promise to help out in fetching the geolocation data asynchronously\r\n\treturn new Promise( (resolve,reject) => { \r\n\r\n\t\t// Call the geolocation API\r\n\t\tnavigator.geolocation.getCurrentPosition(\r\n\t\t\t// Success callback -> promise resolves to geolocation position\r\n\t\t\t(pos) => resolve( [ pos.coords.latitude , pos.coords.longitude ] ),\r\n\r\n\t\t\t// Failure callback -> promise rejects with an error message\r\n\t\t\t()    => reject(new Error('Failed do retrieve your geolocation position.'))\r\n\t\t);\r\n\t});\r\n}", "javascript");
+    this.addCode("// Get GPS cordinates via a Promise\r\nfunction getGPSCoords () {\r\n\t// Create new Promise to help out in fetching the geolocation data asynchronously\r\n\treturn new Promise( (resolve,reject) => { \r\n\r\n\t\t// Call the geolocation API\r\n\t\tnavigator.geolocation.getCurrentPosition(\r\n\t\t\t// Success callback -> promise resolves to geolocation position\r\n\t\t\t(pos) => resolve( [ pos.coords.latitude , pos.coords.longitude ] ),\r\n\r\n\t\t\t// Failure callback -> promise rejects with an error message\r\n\t\t\t()    => reject(new Error('Failed do retrieve your geolocation position.'))\r\n\t\t);\r\n\t});\r\n}", "javascript");
     this.addText("Let's see, how to use that!");
     this.addDemoCode("// Fetch GPS coordinates\r\nlet Coords = getGPSCoords();\r\n\r\n// If/when location information is retrieved, update the UI\r\nCoords.then(\r\n\t(coords) => {\r\n\t\tlet [lat,lon] = coords;\r\n\t\tconsole.log('Lat: '+lat+'°, Lon: '+lon+'°');\r\n\t}\r\n\r\n// ...or show an error message, if retrieving the GPS coordinates failed\r\n).catch(\r\n\t(e) => alert(e)\r\n);", (function(console) {
       return $__0.logLocation(console);
